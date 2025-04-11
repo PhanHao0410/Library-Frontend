@@ -1,13 +1,9 @@
 /* eslint-disable global-require */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ConnectedRouter } from 'connected-react-router';
-import { Provider } from 'react-redux';
+import { Provider } from 'mobx-react';
 import Theme from './themes';
 import GlobalStyles from './themes/GlobalStyles';
-import history from './utils/history';
-import GlobalContainer from './containers/Global';
-import store from './redux/store';
 import App from './App';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -19,14 +15,11 @@ const root = ReactDOM.createRoot(document.getElementById('root-admin'));
 
 root.render(
   <React.Suspense fallback={loading()}>
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <Theme>
-          <GlobalStyles />
-          <GlobalContainer />
-          <App />
-        </Theme>
-      </ConnectedRouter>
+    <Provider>
+      <Theme>
+        <GlobalStyles />
+        <App />
+      </Theme>
     </Provider>
   </React.Suspense>,
 );
@@ -36,14 +29,11 @@ if (module.hot) {
     const AppContainer = require('./App').default;
     root.render(
       <React.Suspense fallback={loading()}>
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            <Theme>
-              <GlobalStyles />
-              <GlobalContainer />
-              <AppContainer />
-            </Theme>
-          </ConnectedRouter>
+        <Provider>
+          <Theme>
+            <GlobalStyles />
+            <AppContainer />
+          </Theme>
         </Provider>
       </React.Suspense>,
     );

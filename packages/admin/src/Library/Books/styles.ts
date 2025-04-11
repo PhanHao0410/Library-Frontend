@@ -1,0 +1,289 @@
+import styled from 'styled-components';
+import Dialog from '@mui/material/Dialog';
+import { devices } from '../DeviceScreen';
+
+export const DetailBookContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  font-family: Open Sans, sans-serif;
+  z-index: 10;
+`;
+export const TypeBookContent = styled.div`
+  height: 100%;
+  width: 100%;
+  .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: drop-shadow(16px 16px 20px gray);
+    z-index: -1; */
+    background: linear-gradient(120deg, #1cb5e0 0%, #000851 100%);
+  }
+`;
+
+export const ListBookContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  color: white;
+  padding: 120px 100px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 30px;
+  row-gap: 30px;
+  @media ${devices.maxlg} {
+    grid-template-columns: repeat(1, 1fr);
+    column-gap: 0px;
+  }
+  @media ${devices.maxmd} {
+    padding: 120px 20px;
+  }
+`;
+
+export const BookDetailItem = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  align-items: center;
+  cursor: default;
+  transition: ease-in 0.5s;
+  :hover {
+    transform: translateY(-5px);
+    transition: ease-in 0.5s;
+  }
+  img {
+    width: 150px;
+    height: 100%;
+    border-radius: 10px;
+  }
+  .content-book {
+    width: 100%;
+    padding: 10px 20px;
+    p {
+      margin-bottom: 20px;
+      font-size: 18px;
+      :last-child {
+        margin-bottom: 0px;
+      }
+      .keyword-book {
+        color: RGB(144 144 143);
+        font-weight: 500;
+      }
+    }
+    .action-contain {
+      width: 100%;
+      text-align: center;
+      border-top: 1px solid RGB(155 152 164);
+      padding-top: 15px;
+      .update {
+        background-color: RGB(21 111 201);
+        margin-right: 8px;
+        transition: ease-in 0.5s;
+        :hover {
+          background-color: RGB(16 86 156);
+          transition: ease-in 0.5s;
+        }
+      }
+      .delete {
+        background-color: RGB(170 26 18);
+        margin-left: 8px;
+        transition: ease-in 0.5s;
+        :hover {
+          background-color: RGB(141 19 12);
+          transition: ease-in 0.5s;
+        }
+      }
+    }
+  }
+`;
+
+export const ToolbarContainer = styled.div`
+  position: fixed;
+  z-index: 999;
+  bottom: 30px;
+  right: 30px;
+`;
+
+export const DialogDeleteContainer = styled(Dialog)`
+  #alert-dialog-content {
+    display: flex;
+    .icon-delete {
+      font-size: 26px;
+      transform: translateY(1px);
+      color: RGB(240 86 78);
+    }
+    .content-dialog {
+      margin-left: 8px;
+      width: 100%;
+      h4 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      h5 {
+        font-weight: 500;
+        font-size: 16px;
+        margin-bottom: 15px;
+      }
+      p {
+        margin-bottom: 6px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      input {
+        width: 100%;
+        border-radius: 8px;
+        padding: 8px 40px 8px 8px;
+        font-size: 16px;
+        border: 1px solid RGB(164 164 163);
+        :hover {
+          outline: 3px solid RGB(226 226 226);
+        }
+        :focus {
+          outline: 3px solid RGB(115 180 246);
+          border: 1px solid RGB(164 164 163);
+        }
+      }
+    }
+  }
+  #alert-dialog-action {
+    margin-right: 20px;
+    margin-bottom: 20px;
+    .btn-cancel {
+      border: 1px solid RGB(164 164 163);
+      margin-right: 5px;
+      color: black;
+      border-radius: 8px;
+      :hover {
+        outline: 3px solid RGB(226 226 226);
+      }
+    }
+    .btn-delete-err {
+      border: 1px solid RGB(164 164 163);
+      color: black;
+      background-color: RGB(229 232 235);
+      opacity: 0.5;
+      cursor: not-allowed !important;
+      border-radius: 8px;
+      padding: 10px 10px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .btn-delete-corr {
+      border-radius: 8px;
+      padding: 10px 10px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background-color: RGB(210 27 17);
+      color: white;
+      :hover {
+        outline: 3px solid RGB(246 203 201);
+      }
+    }
+  }
+`;
+
+export const DialogUpdateContainer = styled(Dialog)`
+  #alert-dialog-content {
+    display: flex;
+    .icon-update {
+      font-size: 40px;
+      color: RGB(76 153 230);
+    }
+    form {
+      width: 100%;
+      margin: 8px 10px;
+      h4 {
+        font-size: 24px;
+      }
+      div {
+        width: 100%;
+        margin-top: 15px;
+      }
+      p {
+        margin-bottom: 3px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      input {
+        width: 100%;
+        border-radius: 4px;
+        border: 1px solid RGB(144 144 143);
+        padding: 8px 30px 8px 8px;
+        font-size: 16px;
+        ::placeholder {
+          font-size: 14px;
+          color: RGB(184 184 184);
+          font-weight: 400;
+        }
+        :hover {
+          outline: 3px solid RGB(227 227 227);
+        }
+        :focus {
+          border: 1px solid RGB(144 144 143);
+          outline: 2px solid RGB(133 191 248);
+        }
+      }
+      textarea {
+        resize: none;
+        width: 100%;
+        height: 80px;
+        border-radius: 4px;
+        padding: 8px 30px 8px 8px;
+        font-size: 16px;
+        border: 1px solid RGB(144 144 143);
+        :hover {
+          outline: 3px solid RGB(227 227 227);
+          border: 1px solid RGB(144 144 143);
+        }
+        :focus {
+          border: 1px solid RGB(144 144 143);
+          outline: 2px solid RGB(133 191 248);
+        }
+        ::placeholder {
+          font-size: 14px;
+          color: RGB(184 184 184);
+          font-weight: 400;
+        }
+      }
+      span {
+        display: inline-block;
+        font-size: 12px;
+        color: red;
+        margin-left: 8px;
+        transform: translateY(-2px);
+      }
+      .btn-container {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        margin-top: 20px;
+        .btn-cancel {
+          border: 1px solid RGB(131 131 131);
+          margin-right: 15px;
+          color: black;
+          :hover {
+            outline: 3px solid RGB(227 227 227);
+          }
+        }
+        .btn-update {
+          color: white;
+          background-color: RGB(48 140 231);
+          :hover {
+            outline: 3px solid RGB(171 210 248);
+          }
+        }
+      }
+    }
+  }
+`;
