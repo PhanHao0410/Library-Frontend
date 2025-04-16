@@ -17,12 +17,34 @@ export const TypeBookContent = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    /* background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    filter: drop-shadow(16px 16px 20px gray);
-    z-index: -1; */
-    background: linear-gradient(120deg, #1cb5e0 0%, #000851 100%);
+    background: #046c04;
+    background: -webkit-linear-gradient(0deg, #046c04 0%, #c1a0d5 100%);
+    background: linear-gradient(0deg, #046c04 0%, #c1a0d5 100%);
+  }
+  .loader-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid;
+    border-color: #ff3d00 transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 
@@ -32,7 +54,7 @@ export const ListBookContainer = styled.div`
   position: relative;
   z-index: 1;
   color: white;
-  padding: 120px 100px;
+  padding: 120px 40px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 30px;
@@ -76,6 +98,19 @@ export const BookDetailItem = styled.div`
       .keyword-book {
         color: RGB(144 144 143);
         font-weight: 500;
+      }
+      span {
+        width: 200px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      a {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        color: white;
+        :hover {
+          color: RGB(23 123 223);
+        }
       }
     }
     .action-contain {
@@ -191,6 +226,11 @@ export const DialogDeleteContainer = styled(Dialog)`
       }
     }
   }
+  .login-container {
+    height: 100%;
+    width: 100%;
+    padding: 40px 20px;
+  }
 `;
 
 export const DialogUpdateContainer = styled(Dialog)`
@@ -242,6 +282,7 @@ export const DialogUpdateContainer = styled(Dialog)`
         padding: 8px 30px 8px 8px;
         font-size: 16px;
         border: 1px solid RGB(144 144 143);
+        font-family: Open Sans, sans-serif;
         :hover {
           outline: 3px solid RGB(227 227 227);
           border: 1px solid RGB(144 144 143);
@@ -283,6 +324,40 @@ export const DialogUpdateContainer = styled(Dialog)`
             outline: 3px solid RGB(171 210 248);
           }
         }
+      }
+    }
+  }
+  .login-container {
+    height: 100%;
+    width: 100%;
+    padding: 40px 20px;
+  }
+`;
+
+export const DialogSuccess = styled.div`
+  padding: 40px;
+  width: 100%;
+  h1 {
+    width: 100%;
+    font-size: 34px;
+    text-align: center;
+    color: RGB(3 45 105);
+  }
+  div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    .btn-exit {
+      border: none;
+      background-color: RGB(236 50 33);
+      color: white;
+      padding: 4px 25px;
+      font-size: 18px;
+      :hover {
+        outline: 2px solid RGB(247 138 128);
+        background-color: RGB(205 21 4);
       }
     }
   }

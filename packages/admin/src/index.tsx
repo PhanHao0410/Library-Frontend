@@ -5,6 +5,7 @@ import { Provider } from 'mobx-react';
 import Theme from './themes';
 import GlobalStyles from './themes/GlobalStyles';
 import App from './App';
+import { RootStore } from './mobx/rootStore';
 import 'react-toastify/dist/ReactToastify.css';
 
 const loading = () => (
@@ -15,7 +16,7 @@ const root = ReactDOM.createRoot(document.getElementById('root-admin'));
 
 root.render(
   <React.Suspense fallback={loading()}>
-    <Provider>
+    <Provider {...RootStore}>
       <Theme>
         <GlobalStyles />
         <App />
@@ -29,7 +30,7 @@ if (module.hot) {
     const AppContainer = require('./App').default;
     root.render(
       <React.Suspense fallback={loading()}>
-        <Provider>
+        <Provider {...RootStore}>
           <Theme>
             <GlobalStyles />
             <AppContainer />

@@ -16,8 +16,9 @@ export const TitleContainer = styled.div`
   padding: 0 80px;
   display: flex;
   justify-content: space-between;
+  animation: slideDown 1s ease-out forwards;
   @media ${devices.maxsm} {
-    padding: 0 20px;
+    padding: 0 5px;
   }
   .type-book {
     font-family: 'oswald-medium,oswald,sans-serif';
@@ -76,6 +77,16 @@ export const TitleContainer = styled.div`
       }
     }
   }
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 `;
 export const ToolbarContainer = styled.div`
   position: fixed;
@@ -92,7 +103,7 @@ export const DialogCreateContainer = styled(Dialog)`
       font-size: 40px;
       color: RGB(92 240 97);
     }
-    form {
+    .form-create-book {
       width: 100%;
       margin: 8px 10px;
 
@@ -135,6 +146,8 @@ export const DialogCreateContainer = styled(Dialog)`
         padding: 8px 30px 8px 8px;
         font-size: 16px;
         border: 1px solid RGB(144 144 143);
+        font-family: Open Sans, sans-serif;
+
         :hover {
           outline: 3px solid RGB(227 227 227);
           border: 1px solid RGB(144 144 143);
@@ -176,6 +189,35 @@ export const DialogCreateContainer = styled(Dialog)`
             outline: 3px solid RGB(171 210 248);
           }
         }
+      }
+    }
+  }
+`;
+
+export const DialogSuccess = styled.div`
+  padding: 40px;
+  width: 100%;
+  h1 {
+    width: 100%;
+    font-size: 34px;
+    text-align: center;
+    color: RGB(3 45 105);
+  }
+  div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    .btn-exit {
+      border: none;
+      background-color: RGB(236 50 33);
+      color: white;
+      padding: 4px 25px;
+      font-size: 18px;
+      :hover {
+        outline: 2px solid RGB(247 138 128);
+        background-color: RGB(205 21 4);
       }
     }
   }

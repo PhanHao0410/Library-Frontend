@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react-lite';
 import history from '../../utils/history';
+import { useStoreMobx } from '../../mobx/hook';
 
 import {
   BookContainer,
@@ -13,7 +15,7 @@ const TYPEBOOK = [
   {
     title: 'Data Structures And Algorithm',
     typeAlt: 'avt_data_structures',
-    urlCode: 'data-structures-and-algorithm',
+    urlCode: 'data-structures-algorithms',
     urlImage:
       'https://theyuvas.com/wp-content/uploads/2021/08/Data-Structures-and-Algorithm-1024x582.png',
   },
@@ -41,6 +43,15 @@ const TYPEBOOK = [
 ];
 
 const TypeBooks = () => {
+  const {
+    rootStore: { typeBooksStore },
+  } = useStoreMobx();
+
+  const bookTypeData = typeBooksStore.getBookTypesData;
+
+  useEffect(() => {
+    typeBooksStore.fetchAllBookTypes();
+  }, []);
   const clickDetailTypeBook = (typeCode) => {
     history.replace(`/detailtypebook/${typeCode}`);
   };
@@ -53,15 +64,17 @@ const TypeBooks = () => {
         </div>
       </PosterContainer>
       <ListTypeContainer>
-        {TYPEBOOK &&
-          TYPEBOOK.map((item) => {
+        {bookTypeData &&
+          bookTypeData[0] &&
+          bookTypeData[0]?.typeCode &&
+          bookTypeData.map((item) => {
             return (
               <TypeBookContainer
-                key={item.typeAlt}
-                onClick={() => clickDetailTypeBook(item.urlCode)}
+                key={item.typeId}
+                onClick={() => clickDetailTypeBook(item.typeCode)}
               >
-                <img src={item.urlImage} alt={item.typeAlt} />
-                <h2 className="title-avt">{item.title}</h2>
+                <img src={item.typePoster} alt={item.typeCode} />
+                <h2 className="title-avt">{item.typeName}</h2>
               </TypeBookContainer>
             );
           })}
@@ -70,4 +83,4 @@ const TypeBooks = () => {
   );
 };
 
-export default TypeBooks;
+export default observer(TypeBooks);

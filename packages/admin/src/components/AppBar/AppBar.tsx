@@ -51,7 +51,7 @@ const AppBar = () => {
           />
           <h3>{`Hao's Library`}</h3>
         </AppBarLibrary>
-        <TabsContainer>
+        {/* <TabsContainer>
           {TABS &&
             TABS.map((item) => {
               return (
@@ -65,34 +65,7 @@ const AppBar = () => {
                 </p>
               );
             })}
-          {/* <p
-          onClick={() => setTabSelected('1')}
-          className={tabSelected === '1' ? 'tab-selected' : null}
-          role="presentation"
-        >
-          Homepage
-        </p>
-        <p
-          onClick={() => setTabSelected('2')}
-          className={tabSelected === '2' ? 'tab-selected' : null}
-          role="presentation"
-        >
-          Library
-        </p>
-        <p
-          onClick={() => setTabSelected('3')}
-          className={tabSelected === '3' ? 'tab-selected' : null}
-          role="presentation"
-        >
-          Product
-        </p>
-        <p
-          onClick={() => setTabSelected('4')}
-          className={tabSelected === '4' ? 'tab-selected' : null}
-          role="presentation"
-        >
-          Contact
-        </p> */}
+          
         </TabsContainer>
         <MenuContainer>
           <div
@@ -106,9 +79,9 @@ const AppBar = () => {
               <span />
             </button>
           </div>
-        </MenuContainer>
+        </MenuContainer> */}
       </AppBarContainer>
-      <DrawerContainer
+      {/* <DrawerContainer
         style={
           clickMenu && checkScreen ? { display: 'flex' } : { display: 'none' }
         }
@@ -129,7 +102,7 @@ const AppBar = () => {
               );
             })}
         </ul>
-      </DrawerContainer>
+      </DrawerContainer> */}
     </>
   );
 };
