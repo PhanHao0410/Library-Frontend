@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { observer } from 'mobx-react-lite';
-import { toast } from 'react-toastify';
 import HomeIcon from '@mui/icons-material/Home';
 import Button from '@mui/material/Button';
 import DialogContent from '@mui/material/DialogContent';
@@ -15,6 +14,8 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PoolIcon from '@mui/icons-material/Pool';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import LoginIcon from '@mui/icons-material/Login';
+import { Tooltip } from '@mui/material';
 
 import history from '../../utils/history';
 import path from '../../constants/clientPath';
@@ -23,8 +24,9 @@ import Practices from '../Practices';
 import LogIn from '../LogIn';
 import { useStoreMobx } from '../../mobx/hook';
 import { CreateBookForm, CreatePracticeForm } from '../../types/Requests';
-import { isHavingToken } from '../../utils/localStorage';
+import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
 import Progress from '../../components/Progress';
+import Footer from '../../components/Footer';
 
 import {
   DetailTypeContainer,
@@ -32,6 +34,7 @@ import {
   ToolbarContainer,
   DialogCreateContainer,
   DialogSuccess,
+  HeadRoomContainer,
 } from './styles';
 
 type FormCreate = {
@@ -43,6 +46,8 @@ type FormCreate = {
     describe: string;
     poster: string;
     linkCource: string;
+    expectedTime: number;
+    filePdf: File;
   };
 };
 
@@ -73,6 +78,9 @@ const DetailTypes = ({ match }) => {
     formState: { errors },
   } = useForm<FormCreatePractice>();
   const isLoadingAdd = typeStore.getIsLoadingAdd;
+  const isLoadindType = typeStore.getIsLoading;
+  const isLoadingBook = bookStore.getIsLoading;
+  const isLoadingPractice = practicesStore.getIsLoading;
   const dataType = typeStore.getTypeData;
   const adBookData = typeStore.getAddBookData;
   const adBookError = typeStore.getAddBookError;
@@ -83,6 +91,7 @@ const DetailTypes = ({ match }) => {
   const [openDialogCreatePractice, setOpenDialogCreatePractice] =
     useState<boolean>(false);
   const [toggle, setToggle] = useState<boolean>(false);
+  const [openDialogLogin, setOpenDialogLogin] = useState<boolean>(false);
   const typeCode = match.params.typecode;
 
   useEffect(() => {
@@ -90,9 +99,21 @@ const DetailTypes = ({ match }) => {
   }, [typeCode]);
 
   useEffect(() => {
-    if (adBookError && adBookError.data) {
-      setErrorCreate('createBook.name', { message: 'Book already exists' });
-      setErrorCreate('createBook.author', { message: 'Book already exists' });
+    if (adBookError?.data?.statusCode === 409) {
+      setErrorCreate('createBook.name', {
+        message: adBookError?.data?.message,
+      });
+      setErrorCreate('createBook.author', {
+        message: adBookError?.data?.message,
+      });
+    }
+    if (adBookError?.status === 403) {
+      setErrorCreate('createBook.filePdf', { message: 'Book file Pdf empty' });
+    }
+    if (adBookError?.data?.statusCode === 413) {
+      setErrorCreate('createBook.filePdf', {
+        message: adBookError?.data?.message,
+      });
     }
     if (adPracticeError && adPracticeError.data) {
       setError('createPractice.practiceName', {
@@ -108,7 +129,7 @@ const DetailTypes = ({ match }) => {
 
   const hadleClikBackHome = () => {
     setOpen(false);
-    history.replace(path.ROOT);
+    history.push(path.ROOT);
   };
 
   const handleOpenDialogCreate = () => {
@@ -127,6 +148,8 @@ const DetailTypes = ({ match }) => {
         describe: '',
         poster: '',
         linkCource: '',
+        expectedTime: 0,
+        filePdf: null,
       },
     });
     typeStore.setResetAddBook();
@@ -134,7 +157,6 @@ const DetailTypes = ({ match }) => {
 
   const handleOpenCreatePractice = () => {
     setOpen(false);
-
     setOpenDialogCreatePractice(true);
   };
 
@@ -169,6 +191,8 @@ const DetailTypes = ({ match }) => {
         describe: '',
         poster: '',
         linkCource: '',
+        expectedTime: 0,
+        filePdf: null,
       },
     });
     typeStore.setResetAddBook();
@@ -180,11 +204,6 @@ const DetailTypes = ({ match }) => {
     }
   };
 
-  const handleCloseLogin = () => {
-    setOpenDialogCreate(false);
-    setOpenDialogCreatePractice(false);
-  };
-
   const handleSubmitCreateBook = (createValue) => {
     const bookName = createValue.createBook.name;
     const bookAuthor = createValue.createBook.author;
@@ -194,6 +213,11 @@ const DetailTypes = ({ match }) => {
     const bookType = dataType?.typeName;
     const bookDescribe = createValue.createBook.describe;
     const bookTypeCode = typeCode;
+    const bookStatus = 'Unread';
+    const bookStatusCode = '1';
+    const expectedTime = createValue.createBook.expectedTime.toString;
+    const spentTime = '0';
+    const file = createValue.createBook.filePdf[0];
     const addBook: CreateBookForm = {
       bookName,
       bookAuthor,
@@ -202,8 +226,12 @@ const DetailTypes = ({ match }) => {
       bookSource,
       bookType,
       bookDescribe,
+      bookStatus,
+      bookStatusCode,
+      expectedTime,
+      spentTime,
     };
-    typeStore.fetchAddBook(bookTypeCode, addBook);
+    typeStore.fetchAddBook(bookTypeCode, addBook, file);
   };
 
   const handleCreatePractice = (practiceValue) => {
@@ -221,38 +249,54 @@ const DetailTypes = ({ match }) => {
 
   return (
     <>
+      <HeadRoomContainer pinStart={100}>
+        <TitleContainer>
+          <div className="type-book">
+            <img
+              src="https://www.nicepng.com/png/full/10-101646_books-png.png"
+              alt="avt_type_book"
+            />
+            <p>{dataType.typeName}</p>
+          </div>
+          {isLoadindType || isLoadingBook || isLoadingPractice ? (
+            <span className="loader-contain" />
+          ) : (
+            <div className="toggle-container">
+              <Tooltip title="Books" placement="bottom" arrow>
+                <div
+                  className={toggle ? 'toggle-item' : 'toggle-select'}
+                  onClick={() => setToggle(false)}
+                  role="presentation"
+                >
+                  <MenuBookIcon className="icon" />
+                </div>
+              </Tooltip>
+              <Tooltip title="Practices" placement="bottom" arrow>
+                <div
+                  className={toggle ? 'toggle-select' : 'toggle-item'}
+                  onClick={() => setToggle(true)}
+                  role="presentation"
+                >
+                  <PoolIcon className="icon" />
+                </div>
+              </Tooltip>
+            </div>
+          )}
+        </TitleContainer>
+      </HeadRoomContainer>
       {dataType && dataType.typeName && (
         <DetailTypeContainer>
-          <TitleContainer>
-            <div className="type-book">
-              <img
-                src="https://www.nicepng.com/png/full/10-101646_books-png.png"
-                alt="avt_type_book"
-              />
-              <p>{dataType.typeName}</p>
-            </div>
-            <div className="toggle-container">
-              <div
-                className={toggle ? 'toggle-item' : 'toggle-select'}
-                onClick={() => setToggle(false)}
-                role="presentation"
-              >
-                <MenuBookIcon className="icon" />
-              </div>
-              <div
-                className={toggle ? 'toggle-select' : 'toggle-item'}
-                onClick={() => setToggle(true)}
-                role="presentation"
-              >
-                <PoolIcon className="icon" />
-              </div>
-            </div>
-          </TitleContainer>
-          <Progress />
           {toggle ? (
-            <Practices practiceTypeCode={typeCode} />
+            <Practices
+              practiceTypeCode={typeCode}
+              openDialogLogin={openDialogLogin}
+            />
           ) : (
-            <Books typeCode={typeCode} typeName={dataType.typeName} />
+            <Books
+              typeCode={typeCode}
+              typeName={dataType.typeName}
+              openDialogLogin={openDialogLogin}
+            />
           )}
 
           <ToolbarContainer>
@@ -264,56 +308,98 @@ const DetailTypes = ({ match }) => {
               }}
             >
               <Backdrop open={open} />
-              <SpeedDial
-                ariaLabel="SpeedDial tooltip example"
-                sx={{
-                  position: 'absolute',
-                  bottom: 10,
-                  right: 10,
-                  '& .MuiFab-primary': {
-                    backgroundColor: 'RGB(3 170 78)',
-                    color: '#fff',
-                    '&:hover': {
-                      backgroundColor: 'RGB(2 113 51)',
+              {isHavingToken() && isTokenExpiry() ? (
+                <SpeedDial
+                  ariaLabel="SpeedDial tooltip example"
+                  sx={{
+                    position: 'absolute',
+                    bottom: 10,
+                    right: 10,
+                    '& .MuiFab-primary': {
+                      backgroundColor: 'rgb(218,57,43)',
+                      color: '#fff',
+                      '&:hover': {
+                        backgroundColor: 'RGB(157 46 36)',
+                      },
                     },
-                  },
-                }}
-                icon={<SpeedDialIcon />}
-                onClose={() => setOpen(false)}
-                onClick={handleToggle}
-                open={open}
-                onOpen={() => {}}
-              >
-                <SpeedDialAction
-                  key="home"
-                  icon={<HomeIcon />}
-                  tooltipTitle="Home"
-                  tooltipOpen
-                  onClick={hadleClikBackHome}
-                />
-                {!toggle ? (
+                  }}
+                  icon={<SpeedDialIcon />}
+                  onClose={() => setOpen(false)}
+                  onClick={handleToggle}
+                  open={open}
+                  onOpen={() => {}}
+                >
                   <SpeedDialAction
-                    key="addBook"
-                    icon={<CreateNewFolderIcon />}
-                    tooltipTitle="Add Book"
+                    key="home"
+                    icon={<HomeIcon />}
+                    tooltipTitle="Home"
                     tooltipOpen
-                    onClick={handleOpenDialogCreate}
+                    onClick={hadleClikBackHome}
                   />
-                ) : (
+                  {!toggle ? (
+                    <SpeedDialAction
+                      key="addBook"
+                      icon={<CreateNewFolderIcon />}
+                      tooltipTitle="Add Book"
+                      tooltipOpen
+                      onClick={handleOpenDialogCreate}
+                    />
+                  ) : (
+                    <SpeedDialAction
+                      key="addPractice"
+                      icon={<LibraryAddIcon />}
+                      tooltipTitle="Add Practice"
+                      tooltipOpen
+                      onClick={handleOpenCreatePractice}
+                    />
+                  )}
+                  ,
+                </SpeedDial>
+              ) : (
+                <SpeedDial
+                  ariaLabel="SpeedDial tooltip example"
+                  sx={{
+                    position: 'absolute',
+                    bottom: 10,
+                    right: 10,
+                    '& .MuiFab-primary': {
+                      backgroundColor: 'rgb(218,57,43)',
+                      color: '#fff',
+                      '&:hover': {
+                        backgroundColor: 'RGB(157 46 36)',
+                      },
+                    },
+                  }}
+                  icon={<SpeedDialIcon />}
+                  onClose={() => setOpen(false)}
+                  onClick={handleToggle}
+                  open={open}
+                  onOpen={() => {}}
+                >
                   <SpeedDialAction
-                    key="addPractice"
-                    icon={<LibraryAddIcon />}
-                    tooltipTitle="Add Practice"
+                    key="home"
+                    icon={<HomeIcon />}
+                    tooltipTitle="Home"
                     tooltipOpen
-                    onClick={handleOpenCreatePractice}
+                    onClick={hadleClikBackHome}
                   />
-                )}
-              </SpeedDial>
+                  <SpeedDialAction
+                    key="logIn"
+                    icon={<LoginIcon />}
+                    tooltipTitle="Logn In"
+                    tooltipOpen
+                    onClick={() => setOpenDialogLogin(true)}
+                  />
+                  ,
+                </SpeedDial>
+              )}
             </Box>
           </ToolbarContainer>
+          <div style={{ position: 'relative', zIndex: '10' }}>
+            <Footer />
+          </div>
         </DetailTypeContainer>
       )}
-
       {/* Dialog creat book */}
       <DialogCreateContainer
         open={openDialogCreate}
@@ -333,118 +419,140 @@ const DetailTypes = ({ match }) => {
           </DialogSuccess>
         ) : (
           <DialogContent id="alert-dialog-content">
-            {isHavingToken() ? (
-              <>
-                <AddBoxIcon className="icon-create" />
-                <form
-                  onSubmit={handleSubmitCreate(handleSubmitCreateBook)}
-                  className="form-create-book"
-                >
-                  <h4>Add Book</h4>
+            <>
+              <AddBoxIcon className="icon-create" />
+              <form
+                onSubmit={handleSubmitCreate(handleSubmitCreateBook)}
+                className="form-create-book"
+              >
+                <h4>Add Book</h4>
 
-                  <div>
-                    <p>{`Book's Name: `}</p>
-                    <input
-                      placeholder={`Book's Name`}
-                      {...registerCreate('createBook.name', {
-                        required: 'Do not empty!!',
-                      })}
-                    />
-                    {errorsCreate?.createBook?.name &&
-                      errorsCreate?.createBook?.name?.message && (
-                        <span>{errorsCreate?.createBook?.name?.message}</span>
-                      )}
-                  </div>
-                  <div>
-                    <p>{`Book's Author: `}</p>
-                    <input
-                      placeholder={`Book's Author`}
-                      {...registerCreate('createBook.author', {
-                        required: 'Do not empty!!',
-                      })}
-                    />
-                    {errorsCreate?.createBook?.author &&
-                      errorsCreate?.createBook?.author?.message && (
-                        <span>{errorsCreate?.createBook?.author?.message}</span>
-                      )}
-                  </div>
-                  <div>
-                    <p>{`Book's Language: `}</p>
-                    <input
-                      placeholder={`Book's Language`}
-                      {...registerCreate('createBook.language', {
-                        required: 'Do not empty!!',
-                      })}
-                    />
-                    {errorsCreate?.createBook?.language &&
-                      errorsCreate?.createBook?.language?.message && (
-                        <span>
-                          {errorsCreate?.createBook?.language?.message}
-                        </span>
-                      )}
-                  </div>
-
-                  <div>
-                    <p>{`Book's Poster: `}</p>
-                    <input
-                      placeholder={`Book's Poster`}
-                      {...registerCreate('createBook.poster', {
-                        required: 'Do not empty!!',
-                      })}
-                    />
-                    {errorsCreate?.createBook?.poster &&
-                      errorsCreate?.createBook?.poster?.message && (
-                        <span>{errorsCreate?.createBook?.poster?.message}</span>
-                      )}
-                  </div>
-                  <div>
-                    <p>{`Book's Cource Link: `}</p>
-                    <input
-                      placeholder={`Book's Cource Link`}
-                      {...registerCreate('createBook.linkCource', {
-                        required: 'Do not empty!!',
-                      })}
-                    />
-                    {errorsCreate?.createBook?.linkCource &&
-                      errorsCreate?.createBook?.linkCource?.message && (
-                        <span>
-                          {errorsCreate?.createBook?.linkCource?.message}
-                        </span>
-                      )}
-                  </div>
-                  <div>
-                    <p>{`Book's Describe: `}</p>
-                    <textarea
-                      name="message"
-                      {...registerCreate('createBook.describe', {
-                        required: 'Do not empty!!',
-                      })}
-                      placeholder={`Book's Describe`}
-                    />
-                    {errorsCreate?.createBook?.describe &&
-                      errorsCreate?.createBook?.describe?.message && (
-                        <span>
-                          {errorsCreate?.createBook?.describe?.message}
-                        </span>
-                      )}
-                  </div>
-                  {isLoadingAdd && <Progress />}
-                  <div className="btn-container">
-                    <Button
-                      onClick={handleCloseDialogCreate}
-                      className="btn-cancel"
-                    >
-                      Cancel
-                    </Button>
-                    <Button className="btn-update" type="submit">
-                      Add
-                    </Button>
-                  </div>
-                </form>
-              </>
-            ) : (
-              <LogIn handleCloseLogin={handleCloseLogin} />
-            )}
+                <div>
+                  <p>{`Book's Name: `}</p>
+                  <input
+                    placeholder={`Book's Name`}
+                    {...registerCreate('createBook.name', {
+                      required: 'Do not empty!!',
+                    })}
+                  />
+                  {errorsCreate?.createBook?.name &&
+                    errorsCreate?.createBook?.name?.message && (
+                      <span>{errorsCreate?.createBook?.name?.message}</span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Book's Author: `}</p>
+                  <input
+                    placeholder={`Book's Author`}
+                    {...registerCreate('createBook.author', {
+                      required: 'Do not empty!!',
+                    })}
+                  />
+                  {errorsCreate?.createBook?.author &&
+                    errorsCreate?.createBook?.author?.message && (
+                      <span>{errorsCreate?.createBook?.author?.message}</span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Book's Language: `}</p>
+                  <input
+                    placeholder={`Book's Language`}
+                    {...registerCreate('createBook.language', {
+                      required: 'Do not empty!!',
+                    })}
+                  />
+                  {errorsCreate?.createBook?.language &&
+                    errorsCreate?.createBook?.language?.message && (
+                      <span>{errorsCreate?.createBook?.language?.message}</span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Book's Poster: `}</p>
+                  <input
+                    placeholder={`Book's Poster`}
+                    {...registerCreate('createBook.poster', {
+                      required: 'Do not empty!!',
+                    })}
+                  />
+                  {errorsCreate?.createBook?.poster &&
+                    errorsCreate?.createBook?.poster?.message && (
+                      <span>{errorsCreate?.createBook?.poster?.message}</span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Book's Cource Link: `}</p>
+                  <input
+                    placeholder={`Book's Cource Link`}
+                    {...registerCreate('createBook.linkCource', {
+                      required: 'Do not empty!!',
+                    })}
+                  />
+                  {errorsCreate?.createBook?.linkCource &&
+                    errorsCreate?.createBook?.linkCource?.message && (
+                      <span>
+                        {errorsCreate?.createBook?.linkCource?.message}
+                      </span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Book's FilePdf: `}</p>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    style={{ cursor: 'pointer' }}
+                    {...registerCreate('createBook.filePdf', {})}
+                    placeholder={`Book's FilePdf`}
+                  />
+                  {errorsCreate?.createBook?.filePdf &&
+                    errorsCreate?.createBook?.filePdf?.message && (
+                      <span>{errorsCreate?.createBook?.filePdf?.message}</span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Book's Expected Time: `}</p>
+                  <input
+                    style={{ width: '60%' }}
+                    type="number"
+                    placeholder={`Book's Expected Time`}
+                    {...registerCreate('createBook.expectedTime', {
+                      required: 'Do not empty!!',
+                    })}
+                  />
+                  {errorsCreate?.createBook?.expectedTime &&
+                    errorsCreate?.createBook?.expectedTime?.message && (
+                      <span>
+                        {errorsCreate?.createBook?.expectedTime?.message}
+                      </span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Book's Describe: `}</p>
+                  <textarea
+                    name="message"
+                    {...registerCreate('createBook.describe', {
+                      required: 'Do not empty!!',
+                    })}
+                    placeholder={`Book's Describe`}
+                  />
+                  {errorsCreate?.createBook?.describe &&
+                    errorsCreate?.createBook?.describe?.message && (
+                      <span>{errorsCreate?.createBook?.describe?.message}</span>
+                    )}
+                </div>
+                {isLoadingAdd && <Progress />}
+                <div className="btn-container">
+                  <Button
+                    onClick={handleCloseDialogCreate}
+                    className="btn-cancel"
+                  >
+                    Cancel
+                  </Button>
+                  <Button className="btn-update" type="submit">
+                    Add
+                  </Button>
+                </div>
+              </form>
+            </>
           </DialogContent>
         )}
       </DialogCreateContainer>
@@ -468,81 +576,81 @@ const DetailTypes = ({ match }) => {
           </DialogSuccess>
         ) : (
           <DialogContent id="alert-dialog-content">
-            {isHavingToken() ? (
-              <>
-                <AddBoxIcon className="icon-create" />
-                <form
-                  onSubmit={handleSubmit(handleCreatePractice)}
-                  className="form-create-book"
-                >
-                  <h4>Add Practice</h4>
-                  <div>
-                    <p>{`Practice's Name: `}</p>
-                    <input
-                      placeholder={`Practice's Name`}
-                      {...register('createPractice.practiceName', {
-                        required: 'Do not empty!!',
-                      })}
-                    />
-                    {errors?.createPractice?.practiceName &&
-                      errors?.createPractice?.practiceName?.message && (
-                        <span>
-                          {errors?.createPractice?.practiceName?.message}
-                        </span>
-                      )}
-                  </div>
-                  <div>
-                    <p>{`Practice's Link: `}</p>
-                    <input
-                      placeholder={`Practice's Link`}
-                      {...register('createPractice.practiceLink', {
-                        required: 'Do not empty!!',
-                      })}
-                    />
-                    {errors?.createPractice?.practiceLink &&
-                      errors?.createPractice?.practiceLink?.message && (
-                        <span>
-                          {errors?.createPractice?.practiceLink?.message}
-                        </span>
-                      )}
-                  </div>
-                  <div>
-                    <p>{`Practice's Describe: `}</p>
+            <>
+              <AddBoxIcon className="icon-create" />
+              <form
+                onSubmit={handleSubmit(handleCreatePractice)}
+                className="form-create-book"
+              >
+                <h4>Add Practice</h4>
+                <div>
+                  <p>{`Practice's Name: `}</p>
+                  <input
+                    placeholder={`Practice's Name`}
+                    {...register('createPractice.practiceName', {
+                      required: 'Do not empty!!',
+                    })}
+                  />
+                  {errors?.createPractice?.practiceName &&
+                    errors?.createPractice?.practiceName?.message && (
+                      <span>
+                        {errors?.createPractice?.practiceName?.message}
+                      </span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Practice's Link: `}</p>
+                  <input
+                    placeholder={`Practice's Link`}
+                    {...register('createPractice.practiceLink', {
+                      required: 'Do not empty!!',
+                    })}
+                  />
+                  {errors?.createPractice?.practiceLink &&
+                    errors?.createPractice?.practiceLink?.message && (
+                      <span>
+                        {errors?.createPractice?.practiceLink?.message}
+                      </span>
+                    )}
+                </div>
+                <div>
+                  <p>{`Practice's Describe: `}</p>
 
-                    <textarea
-                      name="message"
-                      {...register('createPractice.practiceDescribe', {
-                        required: 'Do not empty!!',
-                      })}
-                      placeholder={`Practice's Describe`}
-                    />
-                    {errors?.createPractice?.practiceDescribe &&
-                      errors?.createPractice?.practiceDescribe?.message && (
-                        <span>
-                          {errors?.createPractice?.practiceDescribe?.message}
-                        </span>
-                      )}
-                  </div>
-                  {isLoadingAdd && <Progress />}
-                  <div className="btn-container">
-                    <Button
-                      onClick={handleCloseCreatePractice}
-                      className="btn-cancel"
-                    >
-                      Cancel
-                    </Button>
-                    <Button className="btn-update" type="submit">
-                      Add
-                    </Button>
-                  </div>
-                </form>
-              </>
-            ) : (
-              <LogIn handleCloseLogin={handleCloseLogin} />
-            )}
+                  <textarea
+                    name="message"
+                    {...register('createPractice.practiceDescribe', {
+                      required: 'Do not empty!!',
+                    })}
+                    placeholder={`Practice's Describe`}
+                  />
+                  {errors?.createPractice?.practiceDescribe &&
+                    errors?.createPractice?.practiceDescribe?.message && (
+                      <span>
+                        {errors?.createPractice?.practiceDescribe?.message}
+                      </span>
+                    )}
+                </div>
+                {isLoadingAdd && <Progress />}
+                <div className="btn-container">
+                  <Button
+                    onClick={handleCloseCreatePractice}
+                    className="btn-cancel"
+                  >
+                    Cancel
+                  </Button>
+                  <Button className="btn-update" type="submit">
+                    Add
+                  </Button>
+                </div>
+              </form>
+            </>
           </DialogContent>
         )}
       </DialogCreateContainer>
+      <LogIn
+        openDialogLogin={openDialogLogin}
+        setOpenDialogLogin={setOpenDialogLogin}
+      />
     </>
   );
 };

@@ -1,12 +1,17 @@
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { BaseService, BaseServiceGet } from './BaseService';
+import { ACCESS_TOKEN } from '../constants/localStorage';
 import {
   LoginForm,
   CreateBookForm,
   CreatePracticeForm,
   UpdateBookForm,
+  StatusPayload,
+  TimePayload,
 } from '../types/Requests';
 import { UserResponse } from '../types/Responses';
+
+const token = localStorage.getItem(ACCESS_TOKEN);
 
 const BASE_URL = 'https://library-backend-kv29.onrender.com/api';
 
@@ -27,11 +32,24 @@ const allPracticesInTypeCode = (
 ): Promise<AxiosResponse> => {
   return BaseServiceGet.get(`${BASE_URL}/v1/${practiceType}/practices`);
 };
-const creatBook = (
+const createBook = (
   bookTypeCode: string,
   addBook: CreateBookForm,
+  file: File,
 ): Promise<AxiosResponse> => {
-  return BaseService.post(`${BASE_URL}/v1/${bookTypeCode}/createBook`, addBook);
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  const addBookBlob = new Blob([JSON.stringify(addBook)], {
+    type: 'application/json',
+  });
+
+  formData.append('createBook', addBookBlob);
+  return BaseService.post(
+    `${BASE_URL}/v1/${bookTypeCode}/createBook`,
+    formData,
+  );
 };
 const creatPractice = (
   practiceTypeCode: string,
@@ -59,11 +77,21 @@ const deleteBook = (
 const updateBook = (
   bookTypeCode: string,
   bookId: string,
-  updateData: UpdateBookForm,
+  updateBook: UpdateBookForm,
+  file: File,
 ): Promise<AxiosResponse> => {
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  const updateBookBlob = new Blob([JSON.stringify(updateBook)], {
+    type: 'application/json',
+  });
+
+  formData.append('updateBook', updateBookBlob);
   return BaseService.put(
     `${BASE_URL}/v1/${bookTypeCode}/updateBook/${bookId}`,
-    updateData,
+    formData,
   );
 };
 
@@ -87,11 +115,52 @@ const updatePractice = (
   );
 };
 
+const getSingleBook = (
+  typeCode: string,
+  bookId: string,
+): Promise<AxiosResponse> => {
+  return BaseServiceGet.get(
+    `${BASE_URL}/v1/${typeCode}/getSingleBook/${bookId}`,
+  );
+};
+
+const updateStatusBook = (
+  typeCode: string,
+  bookId: string,
+  statusPayload: StatusPayload,
+): Promise<AxiosResponse> => {
+  return BaseService.put(
+    `${BASE_URL}/v1/${typeCode}/updateStatus/${bookId}`,
+    statusPayload,
+  );
+};
+
+const updateTimeBook = (
+  typeCode: string,
+  bookId: string,
+  timePayload: TimePayload,
+): Promise<AxiosResponse> => {
+  return BaseService.put(
+    `${BASE_URL}/v1/${typeCode}/updateTime/${bookId}`,
+    timePayload,
+  );
+};
+
+const getFilePDF = (fileId: string): Promise<any> => {
+  return BaseServiceGet.get(`${BASE_URL}/v1/file/${fileId}`, {
+    responseType: 'blob',
+  });
+};
+
+const createTypeBook = (createValue): Promise<AxiosResponse> => {
+  return BaseService.post(`${BASE_URL}/v1/createNewType`, createValue);
+};
+
 export default {
   login,
   allBookType,
   allTypeData,
-  creatBook,
+  createBook,
   creatPractice,
   deleteBook,
   updateBook,
@@ -99,4 +168,9 @@ export default {
   updatePractice,
   allBooksInTypeCode,
   allPracticesInTypeCode,
+  getSingleBook,
+  updateStatusBook,
+  updateTimeBook,
+  getFilePDF,
+  createTypeBook,
 };

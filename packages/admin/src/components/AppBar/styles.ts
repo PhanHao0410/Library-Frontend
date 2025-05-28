@@ -1,5 +1,25 @@
 import styled from 'styled-components';
+import Headroom from 'react-headroom';
 import { devices } from '../../Library/DeviceScreen';
+
+export const HeadRoomContainer = styled(Headroom)`
+  .headroom {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .headroom--pinned {
+    transform: translateY(0%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .headroom--unpinned {
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+`;
 
 export const AppBarContainer = styled.div`
   height: 60px;
@@ -9,9 +29,8 @@ export const AppBarContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 80px;
-  position: fixed;
-  z-index: 1000;
   animation: slideDown 1s ease-out forwards;
+
   @media ${devices.maxlg} {
     padding: 0 40px;
   }
@@ -53,6 +72,46 @@ export const AppBarLibrary = styled.div`
     font-size: 30px;
     color: white;
     margin-left: 8px;
+  }
+`;
+
+export const AppbarLoginContainer = styled.div`
+  display: inline-block;
+  height: 100%;
+  .login-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    background-color: transparent;
+    font-size: 16px;
+    padding: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    :hover {
+      opacity: 0.7;
+    }
+    .icon-login {
+      font-size: 50px;
+      color: RGB(218 57 43);
+    }
+    .icon-avt {
+      font-size: 40px;
+      color: RGB(218 57 43);
+    }
+  }
+  .avt-container {
+    border-radius: 50%;
+    background-color: RGB(218 57 43);
+    height: 50px;
+    width: 50px;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .icon-avt {
+      font-size: 40px;
+      color: RGB(218 218 218);
+    }
   }
 `;
 

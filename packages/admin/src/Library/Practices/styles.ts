@@ -3,11 +3,82 @@ import Dialog from '@mui/material/Dialog';
 
 import { devices } from '../DeviceScreen';
 
+export const StyleComputetContainer = styled.div`
+  font-family: Open Sans, sans-serif;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  .computer-setup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px auto;
+    position: relative;
+  }
+
+  .monitor {
+    width: 200px;
+    height: 150px;
+    background: #333;
+    border-radius: 12px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    padding: 10px 5px;
+    .screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      background-color: RGB(218 218 218);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* background-image: url(https://tse2.mm.bing.net/th?id=OIP.B39-1EvwOFXOffOfIKZT0AHaEK&pid=Api&P=0&h=220); */
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+  }
+
+  .peripherals {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px;
+    margin-left: 20px;
+    .keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      .key-row {
+        display: flex;
+        gap: 3px;
+        .key {
+          width: 10px;
+          height: 10px;
+          background: #fff;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+
+  .mouse {
+    width: 30px;
+    height: 45px;
+    background: #666;
+    border-radius: 20px;
+    margin-left: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  }
+`;
+
 export const PracticesContainer = styled.div`
   width: 100%;
   height: 100%;
   font-family: Open Sans, sans-serif;
   z-index: 10;
+  padding-top: 50px;
 `;
 
 export const PracticesContent = styled.div`
@@ -15,6 +86,7 @@ export const PracticesContent = styled.div`
   width: 100%;
   .background {
     position: fixed;
+    z-index: 1;
     top: 0;
     left: 0;
     width: 100%;
@@ -50,6 +122,27 @@ export const PracticesContent = styled.div`
     }
   }
 `;
+export const TitleTopicContain = styled.div`
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .test-border {
+    border: 1px solid RGB(205 205 205);
+    height: 1px;
+    width: 20%;
+  }
+  .title-topic {
+    display: inline-block;
+    text-align: center;
+    font-size: 40px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: RGB(39 36 67);
+    padding: 0 10px;
+  }
+`;
 
 export const ListPracticesContainer = styled.div`
   height: 100%;
@@ -57,30 +150,34 @@ export const ListPracticesContainer = styled.div`
   position: relative;
   z-index: 1;
   color: white;
-  padding: 120px 100px;
-  display: inline-block;
-  grid-template-columns: repeat(2, 1fr);
+  padding: 80px 100px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   column-gap: 30px;
   row-gap: 30px;
-  @media ${devices.maxlg} {
+  @media ${devices.maxXl} {
+    padding: 80px 40px;
+  }
+  @media ${devices.maxal} {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 30px;
+    padding: 80px 20px;
+  }
+  @media ${devices.maxsm} {
     grid-template-columns: repeat(1, 1fr);
     column-gap: 0px;
-  }
-  @media ${devices.maxmd} {
-    padding: 120px 20px;
   }
 `;
 
 export const PracticeItem = styled.div`
-  margin: 0 auto;
-  width: 70%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  border: 1px solid RGB(155 152 164);
   border-radius: 10px;
   align-items: center;
   cursor: default;
   transition: ease-in 0.5s;
   margin-bottom: 50px;
+  padding: 0 30px;
   :hover {
     transform: translateY(-5px);
     transition: ease-in 0.5s;
@@ -93,51 +190,35 @@ export const PracticeItem = styled.div`
   }
 
   .content-book {
-    max-width: 100%;
-    padding: 10px 20px;
-    p {
-      margin-bottom: 20px;
-      font-size: 18px;
-      :last-child {
-        margin-bottom: 0px;
-      }
-      .keyword-book {
-        color: RGB(144 144 143);
-        font-weight: 500;
-      }
-    }
-    span {
-      white-space: normal;
-      word-break: break-word;
-    }
-    a {
-      color: white;
-      :hover {
-        color: RGB(3 106 210);
-      }
-    }
-    .action-contain {
-      width: 100%;
+    width: 100%;
+    h1 {
       text-align: center;
-      border-top: 1px solid RGB(155 152 164);
-      padding-top: 15px;
-      .update {
-        background-color: RGB(21 111 201);
-        margin-right: 8px;
+      font-size: 20px;
+      color: black;
+      padding-bottom: 10px;
+    }
+  }
+  .action-contain {
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid RGB(155 152 164);
+    padding: 10px 0;
+    .update {
+      background-color: RGB(21 111 201);
+      margin-right: 8px;
+      transition: ease-in 0.5s;
+      :hover {
+        background-color: RGB(16 86 156);
         transition: ease-in 0.5s;
-        :hover {
-          background-color: RGB(16 86 156);
-          transition: ease-in 0.5s;
-        }
       }
-      .delete {
-        background-color: RGB(170 26 18);
-        margin-left: 8px;
+    }
+    .delete {
+      background-color: RGB(170 26 18);
+      margin-left: 8px;
+      transition: ease-in 0.5s;
+      :hover {
+        background-color: RGB(141 19 12);
         transition: ease-in 0.5s;
-        :hover {
-          background-color: RGB(141 19 12);
-          transition: ease-in 0.5s;
-        }
       }
     }
   }

@@ -3,7 +3,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import ContactEmergencyIcon from '@mui/icons-material/ContactEmergency';
+import LoginIcon from '@mui/icons-material/Login';
 import { useMediaQuery } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+import Avatar from '@mui/material/Avatar';
+import PersonIcon from '@mui/icons-material/Person';
+import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import LogIn from '../../Library/LogIn';
 
 import {
   AppBarContainer,
@@ -11,6 +17,8 @@ import {
   TabsContainer,
   MenuContainer,
   DrawerContainer,
+  HeadRoomContainer,
+  AppbarLoginContainer,
 } from './styles';
 
 const TABS = [
@@ -34,6 +42,7 @@ const TABS = [
 const AppBar = () => {
   const [tabSelected, setTabSelected] = useState<string>('homepage');
   const [clickMenu, setClickMenu] = useState<boolean>(false);
+  const [openDialogLogin, setOpenDialogLogin] = useState<boolean>(false);
   const checkScreen = useMediaQuery('(max-width:960px)');
 
   const clickTabSelected = (id: string) => {
@@ -41,68 +50,40 @@ const AppBar = () => {
   };
   return (
     <>
-      <AppBarContainer>
-        <AppBarLibrary
-          style={clickMenu && checkScreen ? { opacity: '0' } : null}
-        >
-          <img
-            src="https://www.nicepng.com/png/full/10-101646_books-png.png"
-            alt="avatar_library"
-          />
-          <h3>{`Hao's Library`}</h3>
-        </AppBarLibrary>
-        {/* <TabsContainer>
-          {TABS &&
-            TABS.map((item) => {
-              return (
-                <p
-                  onClick={() => clickTabSelected(item.id)}
-                  className={tabSelected === item.id ? 'tab-selected' : null}
-                  role="presentation"
-                  key={item.id}
-                >
-                  {item.title}
-                </p>
-              );
-            })}
-          
-        </TabsContainer>
-        <MenuContainer>
-          <div
-            className={`toggle-container ${clickMenu ? 'menu-clicked' : null}`}
-            onClick={() => setClickMenu(!clickMenu)}
-            role="presentation"
+      <HeadRoomContainer pinStart={100}>
+        <AppBarContainer>
+          <AppBarLibrary
+            style={clickMenu && checkScreen ? { opacity: '0' } : null}
           >
-            <button className="menu-toggle" type="button">
-              <span />
-              <span />
-              <span />
-            </button>
-          </div>
-        </MenuContainer> */}
-      </AppBarContainer>
-      {/* <DrawerContainer
-        style={
-          clickMenu && checkScreen ? { display: 'flex' } : { display: 'none' }
-        }
-      >
-        <ul>
-          {TABS &&
-            TABS.map((item) => {
-              return (
-                <li
-                  key={item.id}
-                  className={tabSelected === item.id ? 'tab-selected' : null}
-                  onClick={() => clickTabSelected(item.id)}
+            <img
+              src="https://www.nicepng.com/png/full/10-101646_books-png.png"
+              alt="avatar_library"
+            />
+            <h3>My Library</h3>
+          </AppBarLibrary>
+          <AppbarLoginContainer>
+            {isHavingToken() && isTokenExpiry() ? (
+              <div className="avt-container">
+                <PersonIcon className="icon-avt" />
+              </div>
+            ) : (
+              <Tooltip title="LogIn" arrow>
+                <div
+                  className="login-container"
+                  onClick={() => setOpenDialogLogin(true)}
                   role="presentation"
                 >
-                  {item.icon}
-                  <p>{item.title}</p>
-                </li>
-              );
-            })}
-        </ul>
-      </DrawerContainer> */}
+                  <LoginIcon className="icon-login" />
+                </div>
+              </Tooltip>
+            )}
+          </AppbarLoginContainer>
+        </AppBarContainer>
+      </HeadRoomContainer>
+      <LogIn
+        openDialogLogin={openDialogLogin}
+        setOpenDialogLogin={setOpenDialogLogin}
+      />
     </>
   );
 };

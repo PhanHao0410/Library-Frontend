@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import { observer } from 'mobx-react-lite';
 import { Button } from '@mui/material';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import { isHavingToken } from '../../utils/localStorage';
+import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import Progress from '../../components/Progress';
 
 import { useStoreMobx } from '../../mobx/hook';
 
@@ -11,6 +12,7 @@ import {
   LogInContainer,
   TitleContainer,
   AlarmSuccessContainer,
+  DialogLoninContainer,
 } from './styles';
 
 type LoginForm = {
@@ -18,7 +20,7 @@ type LoginForm = {
   userPassword: string;
 };
 
-const LogIn = ({ handleCloseLogin }) => {
+const LogIn = ({ setOpenDialogLogin, openDialogLogin }) => {
   const {
     rootStore: { loginStore },
   } = useStoreMobx();
@@ -31,7 +33,7 @@ const LogIn = ({ handleCloseLogin }) => {
   } = useForm<LoginForm>();
   const [errorAssis, setErrorAssis] = useState(false);
   const checkError = loginStore.getCheckError;
-  const loginData = loginStore.getLoginData;
+  const isLoading = loginStore.getIsLoading;
 
   useEffect(() => {
     if (checkError && errorAssis) {
@@ -45,11 +47,10 @@ const LogIn = ({ handleCloseLogin }) => {
   }, [checkError, errorAssis]);
 
   const handleClickCancel = () => {
-    handleCloseLogin();
+    setOpenDialogLogin(false);
     reset({ userName: '', userPassword: '' });
     setErrorAssis(false);
-    // setError('userName', { message: '' });
-    // setError('userPassword', { message: '' });
+    loginStore.setResetLogin();
   };
 
   const handleLogIn = (valueLogin) => {
@@ -59,8 +60,14 @@ const LogIn = ({ handleCloseLogin }) => {
     setErrorAssis(true);
   };
   return (
-    <>
-      {!isHavingToken() ? (
+    <DialogLoninContainer
+      open={openDialogLogin}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      maxWidth="sm"
+      fullWidth
+    >
+      {!isHavingToken() || !isTokenExpiry() ? (
         <LogInContainer>
           <AdminPanelSettingsIcon className="icon-title" />
           <TitleContainer>
@@ -93,8 +100,7 @@ const LogIn = ({ handleCloseLogin }) => {
                   <span>{errors?.userPassword?.message}</span>
                 )}
               </div>
-              {/* <p>The account is not authorized as an administrator!!</p> */}
-
+              {isLoading && <Progress />}
               <div className="action-container">
                 <Button className="btn-cancel" onClick={handleClickCancel}>
                   Cancel
@@ -117,8 +123,8 @@ const LogIn = ({ handleCloseLogin }) => {
           </div>
         </AlarmSuccessContainer>
       )}
-    </>
+    </DialogLoninContainer>
   );
 };
 
-export default observer(LogIn);
+export default React.memo(observer(LogIn));

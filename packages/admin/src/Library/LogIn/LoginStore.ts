@@ -5,7 +5,7 @@ import AuthenticationService from '../../services/AuthenticationService';
 import { ACCESS_TOKEN } from '../../constants/localStorage';
 
 export class LoginStore {
-  isLoading: boolean;
+  isLoading: boolean = false;
 
   loginData: any = {};
 
@@ -26,6 +26,7 @@ export class LoginStore {
       getIsLoading: computed,
       getErrorData: computed,
       getCheckError: computed,
+      setResetLogin: action,
     });
     this.rootStore = rootStore;
   }
@@ -38,9 +39,12 @@ export class LoginStore {
     try {
       const response = await AuthenticationService.login(data);
       if (response.status === 200) {
+        const expiresIn = 10 * 60 * 60 * 1000;
+        const expiryTime = Date.now() + expiresIn;
         this.isLoading = false;
         this.loginData = response;
         localStorage.setItem(ACCESS_TOKEN, response.data.token);
+        localStorage.setItem('token_expiry', expiryTime.toString());
       }
     } catch (e) {
       this.isLoading = false;
@@ -49,6 +53,13 @@ export class LoginStore {
       this.checkError = true;
     }
   };
+
+  setResetLogin() {
+    this.isLoading = false;
+    this.loginData = {};
+    this.loginError = {};
+    this.checkError = false;
+  }
 
   get getLoginData() {
     return toJS(this.loginData);

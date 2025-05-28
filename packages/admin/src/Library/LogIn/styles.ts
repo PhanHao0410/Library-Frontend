@@ -1,4 +1,12 @@
 import styled from 'styled-components';
+import { Dialog } from '@mui/material';
+
+export const DialogLoninContainer = styled(Dialog)`
+  #alert-dialog-content {
+    display: flex;
+    margin-bottom: 20px !important;
+  }
+`;
 
 export const LogInContainer = styled.div`
   width: 100%;
@@ -6,6 +14,7 @@ export const LogInContainer = styled.div`
   font-family: Open Sans, sans-serif;
   display: flex;
   align-items: start;
+  padding: 20px;
   .icon-title {
     font-size: 60px;
     color: RGB(7 153 146);
@@ -65,6 +74,7 @@ export const TitleContainer = styled.div`
       display: flex;
       align-items: center;
       justify-content: end;
+      margin-bottom: 20px;
       .btn-cancel {
         border: 1px solid RGB(170 170 170);
         color: black;

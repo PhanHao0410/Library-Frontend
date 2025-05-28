@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Headroom from 'react-headroom';
 import Dialog from '@mui/material/Dialog';
 
 import { devices } from '../DeviceScreen';
@@ -7,12 +8,31 @@ export const DetailTypeContainer = styled.div`
   width: 100%;
   height: 100%;
   font-family: Open Sans, sans-serif;
+  position: relative;
+  z-index: 0;
+`;
+
+export const HeadRoomContainer = styled(Headroom)`
+  .headroom {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .headroom--pinned {
+    transform: translateY(0%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .headroom--unpinned {
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
 `;
 
 export const TitleContainer = styled.div`
   width: 100%;
-  position: fixed;
-  z-index: 999;
   padding: 0 80px;
   display: flex;
   justify-content: space-between;
@@ -75,6 +95,59 @@ export const TitleContainer = styled.div`
       :first-child {
         margin-right: 3px;
       }
+    }
+  }
+  .loader-contain {
+    width: 48px;
+    height: 48px;
+    margin-top: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    border: 3px solid;
+    border-color: RGB(173 173 173) RGB(173 173 173) transparent transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    ::after,
+    ::before {
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      border: 3px solid;
+      border-color: transparent transparent #ff3d00 #ff3d00;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      animation: rotationBack 0.5s linear infinite;
+      transform-origin: center center;
+    }
+    ::before {
+      width: 32px;
+      height: 32px;
+      border-color: RGB(173 173 173) RGB(173 173 173) transparent transparent;
+      animation: rotation 1.5s linear infinite;
+    }
+  }
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes rotationBack {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(-360deg);
     }
   }
   @keyframes slideDown {

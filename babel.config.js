@@ -1,42 +1,43 @@
 module.exports = function (api) {
-  api.cache.using(() => process.env.NODE_ENV === "development");
+  api.cache.using(() => process.env.NODE_ENV === 'development');
   // api.cache.never();
   const plugins = [
     [
-      "@babel/plugin-proposal-decorators",
+      '@babel/plugin-proposal-decorators',
       {
-        "legacy": true
-      }
+        legacy: true,
+      },
     ],
     [
-      "@babel/plugin-proposal-class-properties",
+      '@babel/plugin-proposal-class-properties',
       {
-        "loose": true
-      }
+        loose: true,
+      },
     ],
-    ["react-hot-loader/babel"],
+    ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
+    ['react-hot-loader/babel'],
     // 'transform-es2015-modules-commonjs',
-    "babel-plugin-dynamic-import-node",
-    "@babel/plugin-syntax-flow",
-    "@babel/plugin-proposal-optional-chaining",
+    'babel-plugin-dynamic-import-node',
+    '@babel/plugin-syntax-flow',
+    '@babel/plugin-proposal-optional-chaining',
   ];
-  if (api.env() === "test") plugins.push("require-context-hook");
+  if (api.env() === 'test') plugins.push('require-context-hook');
 
   const presets = [
-    "@babel/preset-typescript",
+    '@babel/preset-typescript',
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
-        "targets": {
-          "node": "current"
-        }
-      }
+        targets: {
+          node: 'current',
+        },
+      },
     ],
-    "@babel/preset-react"
+    '@babel/preset-react',
   ];
 
   return {
     presets,
-    plugins
+    plugins,
   };
 };

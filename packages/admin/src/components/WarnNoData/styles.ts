@@ -7,16 +7,14 @@ export const WarnNoDataContainer = styled.div`
   align-items: center;
   justify-content: center;
   font-family: Open Sans, sans-serif;
+  position: relative;
+  z-index: 20;
+  margin: 40px 0 40px;
 
-  h1 {
-    font-size: 35px;
-    color: white;
-    transform: translateY(0px);
-  }
   .text-warn {
     font-size: 35px;
-    color: RGB(2 40 78);
-    transform: translateY(0px);
+    color: rgb(218, 57, 43);
+    transform: translateY(-15px);
   }
 
   .warn-data {

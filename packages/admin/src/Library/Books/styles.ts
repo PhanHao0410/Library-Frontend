@@ -6,20 +6,43 @@ export const DetailBookContainer = styled.div`
   width: 100%;
   height: 100%;
   font-family: Open Sans, sans-serif;
+  padding-top: 50px;
+`;
+
+export const TitleTopicContain = styled.div`
+  position: relative;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .test-border {
+    border: 1px solid RGB(205 205 205);
+    height: 1px;
+    width: 25%;
+  }
+  .title-topic {
+    display: inline-block;
+    text-align: center;
+    font-size: 40px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: RGB(39 36 67);
+    padding: 0 10px;
+  }
 `;
 export const TypeBookContent = styled.div`
   height: 100%;
   width: 100%;
   .background {
-    position: fixed;
-    top: 0;
+    position: absolute;
+    top: -60px;
     left: 0;
     width: 100%;
     height: 100%;
-    background: #046c04;
-    background: -webkit-linear-gradient(0deg, #046c04 0%, #c1a0d5 100%);
-    background: linear-gradient(0deg, #046c04 0%, #c1a0d5 100%);
+    background-color: #f0f0f0;
+    background-image: radial-gradient(circle, #ccc 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 1;
   }
   .loader-container {
     width: 100%;
@@ -54,17 +77,126 @@ export const ListBookContainer = styled.div`
   position: relative;
   z-index: 1;
   color: white;
-  padding: 120px 40px;
+  padding: 80px 40px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   column-gap: 30px;
   row-gap: 30px;
   @media ${devices.maxlg} {
-    grid-template-columns: repeat(1, 1fr);
-    column-gap: 0px;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 30px;
+    row-gap: 50px;
   }
-  @media ${devices.maxmd} {
-    padding: 120px 20px;
+  @media ${devices.maxsm} {
+    grid-template-columns: repeat(1, 1fr);
+    column-gap: 30px;
+    row-gap: 50px;
+    padding: 80px 40px;
+  }
+`;
+
+export const BookContainer = styled.div`
+  border: 1px solid RGB(155 152 164);
+  border-radius: 10px;
+  position: relative;
+  padding: 0 20px;
+  .book-container {
+    h1 {
+      width: 100%;
+      text-align: center;
+      font-size: 16px;
+      color: black;
+      margin-top: 15px;
+    }
+    h3 {
+      width: 100%;
+      text-align: center;
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    :hover {
+      .book-cover {
+        animation: openBook 2s infinite alternate ease-in-out;
+      }
+    }
+  }
+  .book {
+    position: relative;
+    width: 180px;
+    height: 270px;
+    perspective: 1000px;
+    margin: 10px auto;
+    cursor: pointer;
+    .book-cover {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: RGB(137 138 139);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      border-radius: 8px;
+      transform: rotateY(0deg);
+      transform-origin: left;
+      z-index: 3;
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+    .book-pages {
+      position: absolute;
+      width: 98%;
+      height: 96%;
+      background: #fff;
+      left: 1%;
+      top: 2%;
+      border-radius: 6px;
+      box-shadow: inset 0 0 0 1px #ccc;
+      z-index: 2;
+    }
+
+    .book-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: RGB(213 213 213);
+      border-radius: 8px;
+      transform: rotateY(-3deg);
+      transform-origin: left;
+      z-index: 1;
+    }
+  }
+  .action-contain {
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid RGB(155 152 164);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    .update {
+      background-color: RGB(21 111 201);
+      margin-right: 8px;
+      transition: ease-in 0.3s;
+      :hover {
+        background-color: RGB(16 86 156);
+        transition: ease-in 0.3s;
+      }
+    }
+    .delete {
+      background-color: RGB(170 26 18);
+      margin-left: 8px;
+      transition: ease-in 0.3s;
+      :hover {
+        background-color: RGB(141 19 12);
+        transition: ease-in 0.3s;
+      }
+    }
+  }
+
+  @keyframes openBook {
+    0% {
+      transform: rotateY(0deg);
+    }
+    100% {
+      transform: rotateY(-30deg);
+    }
   }
 `;
 
@@ -223,107 +355,6 @@ export const DialogDeleteContainer = styled(Dialog)`
       color: white;
       :hover {
         outline: 3px solid RGB(246 203 201);
-      }
-    }
-  }
-  .login-container {
-    height: 100%;
-    width: 100%;
-    padding: 40px 20px;
-  }
-`;
-
-export const DialogUpdateContainer = styled(Dialog)`
-  #alert-dialog-content {
-    display: flex;
-    .icon-update {
-      font-size: 40px;
-      color: RGB(76 153 230);
-    }
-    form {
-      width: 100%;
-      margin: 8px 10px;
-      h4 {
-        font-size: 24px;
-      }
-      div {
-        width: 100%;
-        margin-top: 15px;
-      }
-      p {
-        margin-bottom: 3px;
-        font-size: 16px;
-        font-weight: 600;
-      }
-      input {
-        width: 100%;
-        border-radius: 4px;
-        border: 1px solid RGB(144 144 143);
-        padding: 8px 30px 8px 8px;
-        font-size: 16px;
-        ::placeholder {
-          font-size: 14px;
-          color: RGB(184 184 184);
-          font-weight: 400;
-        }
-        :hover {
-          outline: 3px solid RGB(227 227 227);
-        }
-        :focus {
-          border: 1px solid RGB(144 144 143);
-          outline: 2px solid RGB(133 191 248);
-        }
-      }
-      textarea {
-        resize: none;
-        width: 100%;
-        height: 80px;
-        border-radius: 4px;
-        padding: 8px 30px 8px 8px;
-        font-size: 16px;
-        border: 1px solid RGB(144 144 143);
-        font-family: Open Sans, sans-serif;
-        :hover {
-          outline: 3px solid RGB(227 227 227);
-          border: 1px solid RGB(144 144 143);
-        }
-        :focus {
-          border: 1px solid RGB(144 144 143);
-          outline: 2px solid RGB(133 191 248);
-        }
-        ::placeholder {
-          font-size: 14px;
-          color: RGB(184 184 184);
-          font-weight: 400;
-        }
-      }
-      span {
-        display: inline-block;
-        font-size: 12px;
-        color: red;
-        margin-left: 8px;
-        transform: translateY(-2px);
-      }
-      .btn-container {
-        display: flex;
-        align-items: center;
-        justify-content: end;
-        margin-top: 20px;
-        .btn-cancel {
-          border: 1px solid RGB(131 131 131);
-          margin-right: 15px;
-          color: black;
-          :hover {
-            outline: 3px solid RGB(227 227 227);
-          }
-        }
-        .btn-update {
-          color: white;
-          background-color: RGB(48 140 231);
-          :hover {
-            outline: 3px solid RGB(171 210 248);
-          }
-        }
       }
     }
   }

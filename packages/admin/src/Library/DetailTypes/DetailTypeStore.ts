@@ -65,14 +65,19 @@ export class TypeStore {
     }
   };
 
-  fetchAddBook = async (bookTypeCode: string, addBook: CreateBookForm) => {
+  fetchAddBook = async (
+    bookTypeCode: string,
+    addBook: CreateBookForm,
+    file: File,
+  ) => {
     this.isLoadingAdd = true;
     this.addBookData = {};
     this.addBookError = {};
     try {
-      const response = await AuthenticationService.creatBook(
+      const response = await AuthenticationService.createBook(
         bookTypeCode,
         addBook,
+        file,
       );
       if (response.status === 200) {
         this.isLoadingAdd = false;

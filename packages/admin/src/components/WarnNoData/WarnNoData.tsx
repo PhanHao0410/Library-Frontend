@@ -5,13 +5,9 @@ const WarnNoData = ({ warnText }) => {
   return (
     <WarnNoDataContainer>
       <div className="content">
-        <div
-          className={warnText === 'books' ? 'warn-data' : 'warn-data-gray'}
-        />
-        <h1 className={warnText === 'books' ? '' : 'text-warn'}>
-          {warnText === 'books'
-            ? 'No books have been saved here yet!!!'
-            : 'No practice have been saved here yet!!!'}
+        <div className="warn-data-gray" />
+        <h1 className="text-warn">
+          {`No ${warnText} have been saved here yet!!!`}
         </h1>
       </div>
     </WarnNoDataContainer>

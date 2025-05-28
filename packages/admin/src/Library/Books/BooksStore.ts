@@ -6,7 +6,7 @@ import AuthenticationService from '../../services/AuthenticationService';
 export class BookStore {
   isLoading: boolean = false;
 
-  isLoadingAction: boolean = false;
+  isLoadingUpdate: boolean = false;
 
   booksData: any = [];
 
@@ -25,7 +25,7 @@ export class BookStore {
   constructor(rootStore: IRootStore) {
     makeObservable(this, {
       isLoading: observable,
-      isLoadingAction: observable,
+      isLoadingUpdate: observable,
       booksData: observable,
       booksError: observable,
       deleteBookData: observable,
@@ -36,7 +36,7 @@ export class BookStore {
       fetchUpdateBook: action,
       fetchAllBooksInType: action,
       getBooksData: computed,
-      getIsLoadingAction: computed,
+      getIsLoadingUpdate: computed,
       getBooksError: computed,
       getIsLoading: computed,
       getDeleteBookData: computed,
@@ -68,7 +68,7 @@ export class BookStore {
   };
 
   fetchDeleteBook = async (bookTypeCode, bookId) => {
-    this.isLoadingAction = true;
+    this.isLoadingUpdate = true;
     this.deleteBookData = {};
     this.deleteBookError = {};
     try {
@@ -77,11 +77,11 @@ export class BookStore {
         bookId,
       );
       if (response.status === 200) {
-        this.isLoadingAction = false;
+        this.isLoadingUpdate = false;
         this.deleteBookData = toJS(response);
       }
     } catch (e) {
-      this.isLoadingAction = false;
+      this.isLoadingUpdate = false;
       this.deleteBookData = {};
       this.deleteBookError = e.response;
     }
@@ -90,23 +90,25 @@ export class BookStore {
   fetchUpdateBook = async (
     bookTypeCode,
     bookId,
-    updateData: UpdateBookForm,
+    updateBook: UpdateBookForm,
+    file,
   ) => {
-    this.isLoadingAction = true;
+    this.isLoadingUpdate = true;
     this.editBookData = {};
     this.editBookError = {};
     try {
       const response = await AuthenticationService.updateBook(
         bookTypeCode,
         bookId,
-        updateData,
+        updateBook,
+        file,
       );
       if (response.status === 200) {
-        this.isLoadingAction = false;
+        this.isLoadingUpdate = false;
         this.editBookData = toJS(response);
       }
     } catch (e) {
-      this.isLoadingAction = false;
+      this.isLoadingUpdate = false;
       this.editBookData = {};
       this.editBookError = toJS(e.response);
     }
@@ -119,13 +121,13 @@ export class BookStore {
   }
 
   setResetDeleteBook() {
-    this.isLoadingAction = false;
+    this.isLoadingUpdate = false;
     this.deleteBookData = {};
     this.deleteBookError = {};
   }
 
   setResetEditBook() {
-    this.isLoadingAction = false;
+    this.isLoadingUpdate = false;
     this.editBookData = {};
     this.editBookError = {};
   }
@@ -134,8 +136,8 @@ export class BookStore {
     return this.isLoading;
   }
 
-  get getIsLoadingAction() {
-    return this.isLoadingAction;
+  get getIsLoadingUpdate() {
+    return this.isLoadingUpdate;
   }
 
   get getBooksData() {

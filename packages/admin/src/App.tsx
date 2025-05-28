@@ -5,6 +5,10 @@ import HomePage from './Library/HomePage';
 import DetailTypes from './Library/DetailTypes';
 import history from './utils/history';
 import WarnNoData from './components/WarnNoData';
+import EditBook from './Library/EditBook';
+import Test from './Library/Test';
+import TimerComponent from './components/TimerComponent';
+
 function App() {
   const s3ConfigPath = (/#!(\/.*)$/.exec(history.location.hash) || [])[1];
   if (s3ConfigPath) {
@@ -18,7 +22,8 @@ function App() {
          *  */}
         <Route exact path={path.ROOT} component={HomePage} />
         <Route path="/detailtypebook/:typecode" component={DetailTypes} />
-        <Route path="/test" component={WarnNoData} />
+        <Route path="/test" component={Test} />
+        <Route path="/:typecode/edit-book/:bookid" component={EditBook} />
         {/**
          * PROTECTED PATHS
          */}
