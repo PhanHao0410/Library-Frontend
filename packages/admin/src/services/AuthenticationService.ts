@@ -11,8 +11,6 @@ import {
 } from '../types/Requests';
 import { UserResponse } from '../types/Responses';
 
-const token = localStorage.getItem(ACCESS_TOKEN);
-
 const BASE_URL = 'https://library-backend-kv29.onrender.com/api';
 
 const allBookType = (): Promise<AxiosResponse> => {

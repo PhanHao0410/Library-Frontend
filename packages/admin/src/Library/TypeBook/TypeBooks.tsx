@@ -10,7 +10,7 @@ import {
   AnimationSuccess,
   AnimationFail,
 } from '../../components/AnimationComponent/AnimationComponent';
-import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import { isHavingToken } from '../../utils/localStorage';
 import {
   BookContainer,
   PosterContainer,

@@ -10,7 +10,7 @@ import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import { useMediaQuery } from '@mui/material';
 import { useStoreMobx } from '../../mobx/hook';
 import LogIn from '../LogIn';
-import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import { isHavingToken } from '../../utils/localStorage';
 import { UpdateBookForm } from '../../types/Requests';
 import Progress from '../../components/Progress';
 import WarnNoData from '../../components/WarnNoData';
@@ -21,7 +21,6 @@ import {
   ListBookContainer,
   BookDetailItem,
   DialogDeleteContainer,
-  DialogUpdateContainer,
   DialogSuccess,
   BookContainer,
   TitleTopicContain,
@@ -159,7 +158,7 @@ const Books = ({ typeCode, typeName, openDialogLogin }) => {
                                   {book.bookStatus}
                                 </h3>
                               )}
-                              {isHavingToken() && isTokenExpiry() && (
+                              {isHavingToken() && (
                                 <div className="action-contain">
                                   <Button
                                     variant="contained"

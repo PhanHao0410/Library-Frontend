@@ -9,7 +9,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import { Tooltip, useMediaQuery } from '@mui/material';
 import LogIn from '../LogIn';
-import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import { isHavingToken } from '../../utils/localStorage';
 import { useStoreMobx } from '../../mobx/hook';
 import { CreatePracticeForm } from '../../types/Requests';
 import Progress from '../../components/Progress';
@@ -248,7 +248,7 @@ const Practices = ({ practiceTypeCode, openDialogLogin }) => {
                                   <h1>{practice.practiceName}</h1>
                                 </div>
                               </a>
-                              {isHavingToken() && isTokenExpiry() && (
+                              {isHavingToken() && (
                                 <div className="action-contain">
                                   <Button
                                     variant="contained"

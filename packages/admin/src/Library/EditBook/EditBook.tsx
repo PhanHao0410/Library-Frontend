@@ -23,7 +23,7 @@ import { useStoreMobx } from '../../mobx/hook';
 import { UpdateBookForm } from '../../types/Requests';
 import Progress from '../../components/Progress';
 import ShowPdf from '../ShowPdf';
-import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import { isHavingToken } from '../../utils/localStorage';
 import history from '../../utils/history';
 import path from '../../constants/clientPath';
 
@@ -522,7 +522,7 @@ const EditBook = () => {
             }}
           >
             <Backdrop open={openToolBar} />
-            {isHavingToken() && isTokenExpiry() ? (
+            {isHavingToken() ? (
               <SpeedDial
                 ariaLabel="SpeedDial tooltip example"
                 sx={{

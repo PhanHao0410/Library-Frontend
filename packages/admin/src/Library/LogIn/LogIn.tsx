@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { observer } from 'mobx-react-lite';
 import { Button } from '@mui/material';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import { isHavingToken } from '../../utils/localStorage';
 import Progress from '../../components/Progress';
 
 import { useStoreMobx } from '../../mobx/hook';
@@ -67,7 +67,7 @@ const LogIn = ({ setOpenDialogLogin, openDialogLogin }) => {
       maxWidth="sm"
       fullWidth
     >
-      {!isHavingToken() || !isTokenExpiry() ? (
+      {!isHavingToken() ? (
         <LogInContainer>
           <AdminPanelSettingsIcon className="icon-title" />
           <TitleContainer>

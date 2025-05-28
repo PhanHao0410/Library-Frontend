@@ -11,7 +11,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import DialogContent from '@mui/material/DialogContent';
-import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import { isHavingToken } from '../../utils/localStorage';
 import Progress from '../../components/Progress';
 import TimerComponent from '../../components/TimerComponent';
 import { useStoreMobx } from '../../mobx/hook';
@@ -43,7 +43,7 @@ const ShowPdf = ({
   const documentRef = useRef<any>(null);
 
   useEffect(() => {
-    if (openFilePdf && isHavingToken() && isTokenExpiry() && filePdfData) {
+    if (openFilePdf && isHavingToken() && filePdfData) {
       setIsReading(true);
     }
   }, [openFilePdf]);

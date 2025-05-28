@@ -24,7 +24,7 @@ import Practices from '../Practices';
 import LogIn from '../LogIn';
 import { useStoreMobx } from '../../mobx/hook';
 import { CreateBookForm, CreatePracticeForm } from '../../types/Requests';
-import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import { isHavingToken } from '../../utils/localStorage';
 import Progress from '../../components/Progress';
 import Footer from '../../components/Footer';
 
@@ -308,7 +308,7 @@ const DetailTypes = ({ match }) => {
               }}
             >
               <Backdrop open={open} />
-              {isHavingToken() && isTokenExpiry() ? (
+              {isHavingToken() ? (
                 <SpeedDial
                   ariaLabel="SpeedDial tooltip example"
                   sx={{

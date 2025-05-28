@@ -8,7 +8,7 @@ import { useMediaQuery } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
 import PersonIcon from '@mui/icons-material/Person';
-import { isHavingToken, isTokenExpiry } from '../../utils/localStorage';
+import { isHavingToken } from '../../utils/localStorage';
 import LogIn from '../../Library/LogIn';
 
 import {
@@ -62,7 +62,7 @@ const AppBar = () => {
             <h3>My Library</h3>
           </AppBarLibrary>
           <AppbarLoginContainer>
-            {isHavingToken() && isTokenExpiry() ? (
+            {isHavingToken() ? (
               <div className="avt-container">
                 <PersonIcon className="icon-avt" />
               </div>

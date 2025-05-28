@@ -14,7 +14,7 @@ const BaseServiceGet = axios.create(mainRequestConfig);
 
 BaseService.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
+    const token = sessionStorage.getItem(ACCESS_TOKEN);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -40,7 +40,7 @@ BaseService.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === STATUS_CODE.UNAUTHORIZED) {
-      localStorage.removeItem(ACCESS_TOKEN);
+      sessionStorage.removeItem(ACCESS_TOKEN);
       removeCachedUrl();
       history.replace(PATH.ROOT);
       return Promise.reject(error);
@@ -55,7 +55,7 @@ BaseServiceGet.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === STATUS_CODE.UNAUTHORIZED) {
-      localStorage.removeItem(ACCESS_TOKEN);
+      sessionStorage.removeItem(ACCESS_TOKEN);
       removeCachedUrl();
       history.replace(PATH.ROOT);
       return Promise.reject(error);

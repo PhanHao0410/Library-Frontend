@@ -39,12 +39,9 @@ export class LoginStore {
     try {
       const response = await AuthenticationService.login(data);
       if (response.status === 200) {
-        const expiresIn = 10 * 60 * 60 * 1000;
-        const expiryTime = Date.now() + expiresIn;
         this.isLoading = false;
         this.loginData = response;
-        localStorage.setItem(ACCESS_TOKEN, response.data.token);
-        localStorage.setItem('token_expiry', expiryTime.toString());
+        sessionStorage.setItem(ACCESS_TOKEN, response.data.token);
       }
     } catch (e) {
       this.isLoading = false;
