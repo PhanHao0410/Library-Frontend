@@ -151,7 +151,9 @@ const ShowPdf = ({
                 onLoadSuccess={onDocumentLoadSuccess}
                 onLoadError={console.error}
                 className="pdf-document"
-                inputRef={(e) => (documentRef.current = e?.pdf)}
+                inputRef={(e) => {
+                  documentRef.current = e?.pdf;
+                }}
               >
                 <Page
                   pageNumber={pageNumber}

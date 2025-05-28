@@ -7,7 +7,7 @@ export const EditBookContainer = styled.div`
   width: 100%;
   height: 100%;
   font-family: Open Sans, sans-serif;
-  margin-bottom: 500px;
+  margin-bottom: 50px;
 
   .status-first {
     margin-left: 20px;
@@ -387,8 +387,9 @@ export const SliderTimeContainer = styled.div`
 export const InfomationBookContainer = styled.div`
   width: 100%;
   height: 100%;
-  border: 1px solid black;
   margin-top: 30px;
+  border-bottom: 1px solid RGB(218 218 218);
+  padding-bottom: 40px;
   .title-contain {
     display: flex;
     align-items: center;

@@ -286,7 +286,7 @@ const EditBook = () => {
   const handleSubmitUpdate = (updateValue) => {
     let file = null;
     if (updateValue.updateBook.filePdf?.length >= 1) {
-      file = updateValue.updateBook.filePdf[0];
+      file = updateValue?.updateBook?.filePdf[0];
     } else {
       const emptyBlob = new Blob([], { type: 'application/pdf' });
       const emptyFile = new File([emptyBlob], 'empty.pdf', {
@@ -300,7 +300,7 @@ const EditBook = () => {
     const bookPoster = updateValue.updateBook.poster;
     const { bookSource } = updateValue.updateBook;
     const bookDescribe = updateValue.updateBook.describe;
-    const bookType = bookData.bookType;
+    const bookType = bookData?.bookType;
     const bookTypeCode = typeCode;
 
     const { bookStatus, bookStatusCode, expectedTime, spentTime } = bookData;
